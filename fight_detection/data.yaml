@@ -1,0 +1,13 @@
+train: /content/drive/MyDrive/Him/Fight_Detection.v7i.yolov8/train/images
+val: /content/drive/MyDrive/Him/Fight_Detection.v7i.yolov8/valid/images
+test: ../test/images
+
+nc: 1
+names: ['Fight']
+
+roboflow:
+  workspace: techno-india-saltlake
+  project: fight_detection-bdxnm
+  version: 7
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/techno-india-saltlake/fight_detection-bdxnm/dataset/7
