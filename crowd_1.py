@@ -1,3 +1,5 @@
+#pip install ultralytics numpy supervision opencv-python-headless
+#sudo apt-get install python3-tk
 import cv2
 from ultralytics import YOLO
 import numpy as np
