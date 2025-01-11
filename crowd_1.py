@@ -4,13 +4,26 @@ import numpy as np
 import supervision as sv
 import tkinter as tk
 from tkinter import simpledialog
+import RPi.GPIO as GPIO
+import time
 
 # Path to YOLO model
-MODEL_PATH_CROWD = "D:/himanshu/tempcode/yolov8n.pt"  # For crowd detection
+MODEL_PATH_CROWD = "D:/43_himanshu_dhomane_/yolov8n.pt"  # For crowd detection
+
+# GPIO setup for Raspberry Pi
+BUZZER_PIN = 18  # Replace with your GPIO pin number
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(BUZZER_PIN, GPIO.OUT)
 
 # Global variables
 people_count = 0
 threshold = 0
+
+# Function to activate the buzzer
+def activate_buzzer():
+    GPIO.output(BUZZER_PIN, GPIO.HIGH)
+    time.sleep(1)
+    GPIO.output(BUZZER_PIN, GPIO.LOW)
 
 # Function to process and display video with crowd detection
 def process_video(video_path, model_path, threshold):
@@ -65,13 +78,7 @@ def process_video(video_path, model_path, threshold):
         # Check if the count exceeds the threshold
         if people_count > threshold:
             print(f"Threshold exceeded! Detected: {people_count}, Threshold: {threshold}")
-            # Display warning text on the frame
-            warning_text = "WARNING: CROWD LIMIT EXCEEDED!"
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            text_size = cv2.getTextSize(warning_text, font, 1, 2)[0]
-            text_x = (frame.shape[1] - text_size[0]) // 2
-            text_y = 50
-            cv2.putText(frame, warning_text, (text_x, text_y), font, 1, (0, 0, 255), 2)
+            activate_buzzer()
 
         # Annotate the frame with detection results
         frame = box_annotators.annotate(scene=frame, detections=detections)
@@ -117,4 +124,7 @@ def get_threshold_and_start():
         process_video(video_path, MODEL_PATH_CROWD, threshold)
 
 if __name__ == "__main__":
-    get_threshold_and_start()
+    try:
+        get_threshold_and_start()
+    finally:
+        GPIO.cleanup()  # Clean up GPIO pins on exit
